@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Subjects - AI Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-primary mb-3">
+                    <i class="fas fa-book-open me-2"></i>Available Subjects
+                </h2>
+                <p class="text-muted">Choose a subject to start your learning journey, take quizzes, and complete assignments.</p>
+                <div class="text-center mb-3">
+                    <a href="/student/performance_prediction" class="btn btn-warning">
+                        <i class="fas fa-brain me-2"></i>AI Performance Prediction
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for subject in subjects %}
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-code me-2"></i>{{ subject.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ subject.description }}</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="/student/learning_path/{{ subject.id }}" class="btn btn-primary">
+                        <i class="fas fa-route me-2"></i>Learning Path
+                    </a>
+                    
+                    <div class="btn-group" role="group">
+                        <a href="/student/quiz/{{ subject.id }}/1" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-play me-1"></i>Level 1 (10Q)
+                        </a>
+                        <a href="/student/quiz/{{ subject.id }}/2" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-play me-1"></i>Level 2 (20Q)
+                        </a>
+                        <a href="/student/quiz/{{ subject.id }}/3" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-play me-1"></i>Level 3 (30Q)
+                        </a>
+                    </div>
+                    
+                    <a href="/student/assignments/{{ subject.id }}" class="btn btn-secondary">
+                        <i class="fas fa-clipboard-list me-2"></i>Assignments
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>
+                    <i class="fas fa-user me-1"></i>Teacher: {{ subject.teacher.username if subject.teacher else 'System' }}
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not subjects %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No Subjects Available</h4>
+                <p class="text-muted">No subjects have been added yet. Please contact your administrator.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

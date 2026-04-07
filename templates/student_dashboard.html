@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - AI Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-user-graduate fa-4x text-success mb-3"></i>
+                <h2 class="rainbow-text mb-3">Welcome, Student!</h2>
+                <p class="lead text-muted">Student Dashboard - Your personalized learning journey</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Subjects & Learning Path -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-book-open me-2"></i>Learning Path</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-route fa-3x text-primary mb-3"></i>
+                <p>Access personalized learning paths and AI-driven learning sequence recommendations.</p>
+                <a href="/student/subjects" class="btn btn-primary">
+                    <i class="fas fa-play me-2"></i>Start Learning
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>Quizzes</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-clipboard-check fa-3x text-info mb-3"></i>
+                <p>Take multi-level quizzes and track your progress through different difficulty levels.</p>
+                <div class="d-grid gap-2">
+                    <small class="text-muted">Level 1: 10 Questions</small>
+                    <small class="text-muted">Level 2: 20 Questions</small>
+                    <small class="text-muted">Level 3: 30 Questions</small>
+                </div>
+                <a href="/student/subjects" class="btn btn-info mt-2">
+                    <i class="fas fa-play me-2"></i>Take Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Analysis -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-file-upload me-2"></i>Resume Analysis</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                <p>Upload your resume for AI-powered analysis and personalized interview questions.</p>
+                <div class="d-grid gap-2">
+                    <small class="text-muted">• AI skill extraction</small>
+                    <small class="text-muted">• Personalized questions</small>
+                    <small class="text-muted">• Career insights</small>
+                </div>
+                <a href="/student/resume_upload" class="btn btn-info mt-2">
+                    <i class="fas fa-upload me-2"></i>Analyze Resume
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games & Comedy -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-gamepad me-2"></i>Study Break</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-smile fa-3x text-warning mb-3"></i>
+                <p>Take a break with educational games and comedy content to refresh your mind.</p>
+                <a href="/student/games" class="btn btn-warning">
+                    <i class="fas fa-play me-2"></i>Play Games
+                </a>
+                <button class="btn btn-outline-warning mt-2" onclick="getComedyContent()">
+                    <i class="fas fa-laugh me-2"></i>Comedy Break
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignments -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Assignments</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-tasks fa-3x text-secondary mb-3"></i>
+                <p>Complete assignments based on topics covered and your current quiz level.</p>
+                <a href="/student/subjects" class="btn btn-secondary">
+                    <i class="fas fa-file-alt me-2"></i>View Assignments
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Tracking -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Progress</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-trophy fa-3x text-danger mb-3"></i>
+                <p>Track your learning progress, quiz scores, and performance improvements.</p>
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 65%"></div>
+                </div>
+                <small class="text-muted">Overall Progress: 65%</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-gradient text-white" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                <h5 class="mb-0"><i class="fas fa-robot me-2"></i>AI Assistant</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-comments fa-3x mb-3" style="color: #667eea;"></i>
+                <p>Get instant help with subjects, assignments, quizzes, and learning guidance from your AI assistant.</p>
+                <div class="d-grid gap-2">
+                    <small class="text-muted">• 24/7 Available</small>
+                    <small class="text-muted">• Personalized help</small>
+                    <small class="text-muted">• Subject-specific guidance</small>
+                </div>
+                <a href="/chatbot" class="btn btn-primary mt-2" style="background: linear-gradient(45deg, #667eea, #764ba2); border: none;">
+                    <i class="fas fa-comments me-2"></i>Chat Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <button class="btn btn-outline-primary btn-lg w-100" onclick="quickQuiz()">
+                            <i class="fas fa-rocket d-block mb-2"></i>
+                            Quick Quiz
+                        </button>
+                    </div>  
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="/student/resume_upload" class="btn btn-outline-info btn-lg w-100">
+                            <i class="fas fa-file-upload d-block mb-2"></i>
+                            Resume Analysis
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <button class="btn btn-outline-warning btn-lg w-100" onclick="getComedyContent()">
+                            <i class="fas fa-laugh d-block mb-2"></i>
+                            Comedy Break
+                        </button>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <button class="btn btn-outline-secondary btn-lg w-100" onclick="showLearningTips()">
+                            <i class="fas fa-lightbulb d-block mb-2"></i>
+                            Learning Tips
+                        </button>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="/chatbot" class="btn btn-outline-primary btn-lg w-100" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none;">
+                            <i class="fas fa-robot d-block mb-2"></i>
+                            AI Assistant
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comedy Modal -->
+<div class="modal fade" id="comedyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title"><i class="fas fa-laugh me-2"></i>Comedy Break</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-smile fa-4x text-warning mb-3"></i>
+                <p id="comedyContent" class="lead"></p>
+                <button class="btn btn-warning" onclick="getComedyContent()">
+                    <i class="fas fa-refresh me-2"></i>Another One!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Learning Tips Modal -->
+<div class="modal fade" id="tipsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="fas fa-lightbulb me-2"></i>Learning Tips</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        <strong>Take Regular Breaks:</strong> Study for 25-30 minutes, then take a 5-minute break.
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-repeat text-success me-2"></i>
+                        <strong>Practice Regularly:</strong> Consistent daily practice is better than long cramming sessions.
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-question text-info me-2"></i>
+                        <strong>Ask Questions:</strong> Don't hesitate to clarify doubts during learning.
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-users text-warning me-2"></i>
+                        <strong>Collaborate:</strong> Discuss topics with peers to deepen understanding.
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-target text-danger me-2"></i>
+                        <strong>Set Goals:</strong> Break down your learning into achievable milestones.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function quickQuiz() {
+    window.location.href = '/student/subjects';
+}
+
+function practiceInterview() {
+    window.location.href = '/student/subjects';
+}
+
+function getComedyContent() {
+    fetch('/api/comedy_content')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('comedyContent').textContent = data.content;
+            const modal = new bootstrap.Modal(document.getElementById('comedyModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to get comedy content');
+        });
+}
+
+function showLearningTips() {
+    const modal = new bootstrap.Modal(document.getElementById('tipsModal'));
+    modal.show();
+}
+
+// Auto-refresh progress (mock implementation)
+document.addEventListener('DOMContentLoaded', function() {
+    // Simulate progress updates
+    setTimeout(() => {
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+            const currentWidth = parseInt(progressBar.style.width);
+            const newWidth = Math.min(100, currentWidth + Math.floor(Math.random() * 10));
+            progressBar.style.width = newWidth + '%';
+            progressBar.nextElementSibling.textContent = `Overall Progress: ${newWidth}%`;
+        }
+    }, 2000);
+});
+</script>
+{% endblock %}

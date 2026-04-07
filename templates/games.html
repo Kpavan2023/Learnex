@@ -1,0 +1,936 @@
+{% extends "base.html" %}
+
+{% block title %}Games - AI Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-gamepad fa-4x text-warning mb-3"></i>
+                <h2 class="text-warning">Study Break Games</h2>
+                <p class="lead text-muted">Take a refreshing break with these educational games and comedy content!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Number Puzzle -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Number Puzzle</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-sort-numeric-up fa-3x text-success mb-3"></i>
+                <p>Solve number puzzles to sharpen your logical thinking.</p>
+                <button class="btn btn-success" onclick="startNumberPuzzle()">
+                    <i class="fas fa-play me-2"></i>Play Number Puzzle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tic Tac Toe -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-times me-2"></i>Tic Tac Toe</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-th fa-3x text-primary mb-3"></i>
+                <p>Classic Tic Tac Toe game to exercise strategic thinking.</p>
+                <button class="btn btn-primary" onclick="startTicTacToe()">
+                    <i class="fas fa-play me-2"></i>Play Tic Tac Toe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snake Game -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-wifi me-2" style="transform: rotate(45deg);"></i>Snake Game</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-wifi fa-3x text-warning mb-3" style="transform: rotate(45deg);"></i>
+                <p>Classic Snake game to improve reflexes and concentration.</p>
+                <button class="btn btn-warning" onclick="startSnakeGame()">
+                    <i class="fas fa-play me-2"></i>Play Snake Game
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2048 Game -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-th me-2"></i>2048</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-square-full fa-3x text-info mb-3"></i>
+                <p>Slide and combine tiles to reach 2048 in this addictive puzzle game.</p>
+                <button class="btn btn-info" onclick="start2048Game()">
+                    <i class="fas fa-play me-2"></i>Play 2048
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rock Paper Scissors -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-hand-rock me-2"></i>Rock Paper Scissors</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-hand-paper fa-3x text-secondary mb-3"></i>
+                <p>Classic hand game against the computer. Test your luck and strategy!</p>
+                <button class="btn btn-secondary" onclick="startRockPaperScissors()">
+                    <i class="fas fa-play me-2"></i>Play RPS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comedy Corner -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-laugh me-2"></i>Comedy Corner</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-smile fa-3x text-danger mb-3"></i>
+                <p>Enjoy programming jokes and funny content to lighten your mood.</p>
+                <button class="btn btn-danger" onclick="getComedyContent()">
+                    <i class="fas fa-laugh me-2"></i>Get a Joke
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Game Container -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card" id="gameContainer" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0" id="gameTitle">Game Area</h5>
+                <button class="btn btn-sm btn-outline-secondary float-end" onclick="closeGame()">
+                    <i class="fas fa-times"></i> Close Game
+                </button>
+            </div>
+            <div class="card-body" id="gameArea">
+                <!-- Game content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comedy Modal -->
+<div class="modal fade" id="comedyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-laugh me-2"></i>Comedy Break</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-smile fa-4x text-danger mb-3"></i>
+                <p id="comedyContent" class="lead"></p>
+                <button class="btn btn-danger" onclick="getComedyContent()">
+                    <i class="fas fa-refresh me-2"></i>Another One!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Memory Game
+function startMemoryGame() {
+    showGame("Memory Game", createMemoryGame());
+}
+
+function createMemoryGame() {
+    const symbols = ['🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+    const cards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+    
+    let html = '<div class="row">';
+    for (let i = 0; i < cards.length; i++) {
+        html += `
+            <div class="col-3 mb-2">
+                <button class="btn btn-outline-primary w-100 memory-card" 
+                        data-symbol="${cards[i]}" onclick="flipCard(this)">
+                    ?
+                </button>
+            </div>
+        `;
+    }
+    html += '</div>';
+    
+    return html + `
+        <div class="text-center mt-3">
+            <p>Flipped: <span id="flippedCount">0</span> | Matches: <span id="matchCount">0</span></p>
+        </div>
+    `;
+}
+
+let flippedCards = [];
+let matchedPairs = 0;
+let flippedCount = 0;
+
+function flipCard(card) {
+    if (flippedCards.length >= 2 || card.classList.contains('matched') || card.textContent !== '?') {
+        return;
+    }
+    
+    card.textContent = card.dataset.symbol;
+    card.classList.add('btn-primary');
+    flippedCards.push(card);
+    flippedCount++;
+    document.getElementById('flippedCount').textContent = flippedCount;
+    
+    if (flippedCards.length === 2) {
+        setTimeout(() => {
+            if (flippedCards[0].dataset.symbol === flippedCards[1].dataset.symbol) {
+                flippedCards.forEach(c => {
+                    c.classList.add('matched', 'btn-success');
+                    c.classList.remove('btn-primary');
+                });
+                matchedPairs++;
+                document.getElementById('matchCount').textContent = matchedPairs;
+                
+                if (matchedPairs === 8) {
+                    alert('Congratulations! You won!');
+                }
+            } else {
+                flippedCards.forEach(c => {
+                    c.textContent = '?';
+                    c.classList.remove('btn-primary');
+                });
+            }
+            flippedCards = [];
+        }, 1000);
+    }
+}
+
+// Tic Tac Toe
+function startTicTacToe() {
+    showGame("Tic Tac Toe", createTicTacToe());
+}
+
+function createTicTacToe() {
+    let html = '<div class="container-fluid"><div class="row justify-content-center">';
+    for (let i = 0; i < 9; i++) {
+        const row = Math.floor(i / 3);
+        const col = i % 3;
+        if (col === 0) {
+            html += '<div class="row justify-content-center mb-2">';
+        }
+        html += `
+            <div class="col-auto">
+                <button class="btn btn-outline-primary square-btn" 
+                        onclick="playTicTacToe(${i}, this)" 
+                        style="width: 80px; height: 80px; font-size: 24px; font-weight: bold;">
+                </button>
+            </div>
+        `;
+        if (col === 2) {
+            html += '</div>';
+        }
+    }
+    html += '</div>';
+    
+    return html + `
+        <div class="text-center mt-4">
+            <p><strong>Current Player: <span id="currentPlayer">X</span></strong></p>
+            <button class="btn btn-secondary" onclick="resetTicTacToe()">Reset Game</button>
+        </div>
+    `;
+}
+
+let ticTacToeBoard = Array(9).fill('');
+let currentTicTacToePlayer = 'X';
+
+function playTicTacToe(index, button) {
+    if (ticTacToeBoard[index] !== '' || checkTicTacToeWinner()) {
+        return;
+    }
+    
+    ticTacToeBoard[index] = currentTicTacToePlayer;
+    button.textContent = currentTicTacToePlayer;
+    button.classList.add(currentTicTacToePlayer === 'X' ? 'btn-primary' : 'btn-success');
+    
+    if (checkTicTacToeWinner()) {
+        alert(`Player ${currentTicTacToePlayer} wins!`);
+        return;
+    }
+    
+    if (ticTacToeBoard.every(cell => cell !== '')) {
+        alert("It's a tie!");
+        return;
+    }
+    
+    currentTicTacToePlayer = currentTicTacToePlayer === 'X' ? 'O' : 'X';
+    document.getElementById('currentPlayer').textContent = currentTicTacToePlayer;
+}
+
+function checkTicTacToeWinner() {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
+    
+    return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return ticTacToeBoard[a] && 
+               ticTacToeBoard[a] === ticTacToeBoard[b] && 
+               ticTacToeBoard[a] === ticTacToeBoard[c];
+    });
+}
+
+function resetTicTacToe() {
+    ticTacToeBoard = Array(9).fill('');
+    currentTicTacToePlayer = 'X';
+    document.getElementById('currentPlayer').textContent = 'X';
+    document.querySelectorAll('.square-btn').forEach(btn => {
+        btn.textContent = '';
+        btn.className = 'btn btn-outline-primary w-100 square-btn';
+    });
+}
+
+// Word Scramble
+function startWordScramble() {
+    showGame("Word Scramble", createWordScramble());
+}
+
+function createWordScramble() {
+    const words = ['PYTHON', 'JAVASCRIPT', 'FUNCTION', 'VARIABLE', 'ALGORITHM', 'DATABASE', 'PROGRAMMING', 'DEBUGGING'];
+    const word = words[Math.floor(Math.random() * words.length)];
+    const scrambled = word.split('').sort(() => Math.random() - 0.5).join('');
+    
+    return `
+        <div class="text-center">
+            <h4>Unscramble this word:</h4>
+            <h2 class="text-primary mb-4">${scrambled}</h2>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="wordGuess" placeholder="Enter your guess">
+            </div>
+            <button class="btn btn-primary" onclick="checkWord('${word}')">Check Answer</button>
+            <button class="btn btn-secondary ms-2" onclick="startWordScramble()">New Word</button>
+            <div id="wordResult" class="mt-3"></div>
+        </div>
+    `;
+}
+
+function checkWord(correctWord) {
+    const guess = document.getElementById('wordGuess').value.toUpperCase();
+    const result = document.getElementById('wordResult');
+    
+    if (guess === correctWord) {
+        result.innerHTML = '<div class="alert alert-success">Correct! Well done!</div>';
+    } else {
+        result.innerHTML = '<div class="alert alert-danger">Try again!</div>';
+    }
+}
+
+// Number Puzzle
+function startNumberPuzzle() {
+    showGame("Number Puzzle", createNumberPuzzle());
+}
+
+function createNumberPuzzle() {
+    const num1 = Math.floor(Math.random() * 50) + 1;
+    const num2 = Math.floor(Math.random() * 50) + 1;
+    const operations = ['+', '-', '*'];
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+    
+    let answer;
+    switch(operation) {
+        case '+': answer = num1 + num2; break;
+        case '-': answer = num1 - num2; break;
+        case '*': answer = num1 * num2; break;
+    }
+    
+    return `
+        <div class="text-center">
+            <h4>Solve this puzzle:</h4>
+            <h2 class="text-primary mb-4">${num1} ${operation} ${num2} = ?</h2>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="numberGuess" placeholder="Enter your answer">
+            </div>
+            <button class="btn btn-primary" onclick="checkNumber(${answer})">Check Answer</button>
+            <button class="btn btn-secondary ms-2" onclick="startNumberPuzzle()">New Puzzle</button>
+            <div id="numberResult" class="mt-3"></div>
+        </div>
+    `;
+}
+
+function checkNumber(correctAnswer) {
+    const guess = parseInt(document.getElementById('numberGuess').value);
+    const result = document.getElementById('numberResult');
+    
+    if (guess === correctAnswer) {
+        result.innerHTML = '<div class="alert alert-success">Correct! Great job!</div>';
+    } else {
+        result.innerHTML = `<div class="alert alert-danger">Try again! The correct answer is ${correctAnswer}</div>`;
+    }
+}
+
+// Snake Game
+let snakeGame = {
+    canvas: null,
+    ctx: null,
+    snake: [{x: 200, y: 200}],
+    direction: {x: 20, y: 0},
+    food: {x: 100, y: 100},
+    score: 0,
+    gameLoop: null
+};
+
+function startSnakeGame() {
+    showGame("Snake Game", createSnakeGame());
+    initSnake();
+}
+
+function createSnakeGame() {
+    return `
+        <div class="text-center">
+            <canvas id="snakeCanvas" width="400" height="400" style="border: 3px solid #333; background: #2d5016;"></canvas>
+            <div class="mt-3">
+                <p><strong>Score: <span id="snakeScore">0</span></strong></p>
+                <p>Use arrow keys to control the snake</p>
+                <button class="btn btn-warning" onclick="pauseSnake()">Pause/Resume</button>
+                <button class="btn btn-secondary ms-2" onclick="resetSnake()">Reset</button>
+            </div>
+        </div>
+    `;
+}
+
+function initSnake() {
+    snakeGame.canvas = document.getElementById('snakeCanvas');
+    snakeGame.ctx = snakeGame.canvas.getContext('2d');
+    snakeGame.snake = [{x: 200, y: 200}];
+    snakeGame.direction = {x: 20, y: 0};
+    snakeGame.score = 0;
+    generateFood();
+    
+    document.addEventListener('keydown', handleSnakeInput);
+    snakeGame.gameLoop = setInterval(updateSnake, 200);
+    drawSnake();
+}
+
+function handleSnakeInput(e) {
+    const key = e.key;
+    if (key === 'ArrowUp' && snakeGame.direction.y === 0) {
+        snakeGame.direction = {x: 0, y: -20};
+    } else if (key === 'ArrowDown' && snakeGame.direction.y === 0) {
+        snakeGame.direction = {x: 0, y: 20};
+    } else if (key === 'ArrowLeft' && snakeGame.direction.x === 0) {
+        snakeGame.direction = {x: -20, y: 0};
+    } else if (key === 'ArrowRight' && snakeGame.direction.x === 0) {
+        snakeGame.direction = {x: 20, y: 0};
+    }
+}
+
+function updateSnake() {
+    const head = {x: snakeGame.snake[0].x + snakeGame.direction.x, y: snakeGame.snake[0].y + snakeGame.direction.y};
+    
+    // Check wall collision
+    if (head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400) {
+        gameOverSnake();
+        return;
+    }
+    
+    // Check self collision
+    if (snakeGame.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        gameOverSnake();
+        return;
+    }
+    
+    snakeGame.snake.unshift(head);
+    
+    // Check food collision
+    if (head.x === snakeGame.food.x && head.y === snakeGame.food.y) {
+        snakeGame.score += 10;
+        document.getElementById('snakeScore').textContent = snakeGame.score;
+        generateFood();
+    } else {
+        snakeGame.snake.pop();
+    }
+    
+    drawSnake();
+}
+
+function drawSnake() {
+    if (!snakeGame.ctx) return;
+    
+    // Clear canvas
+    snakeGame.ctx.fillStyle = '#2d5016';
+    snakeGame.ctx.fillRect(0, 0, 400, 400);
+    
+    // Draw snake
+    snakeGame.ctx.fillStyle = '#90EE90';
+    snakeGame.snake.forEach(segment => {
+        snakeGame.ctx.fillRect(segment.x, segment.y, 20, 20);
+    });
+    
+    // Draw food
+    snakeGame.ctx.fillStyle = '#FF6347';
+    snakeGame.ctx.fillRect(snakeGame.food.x, snakeGame.food.y, 20, 20);
+}
+
+function generateFood() {
+    snakeGame.food = {
+        x: Math.floor(Math.random() * 20) * 20,
+        y: Math.floor(Math.random() * 20) * 20
+    };
+}
+
+function pauseSnake() {
+    if (snakeGame.gameLoop) {
+        clearInterval(snakeGame.gameLoop);
+        snakeGame.gameLoop = null;
+    } else {
+        snakeGame.gameLoop = setInterval(updateSnake, 200);
+    }
+}
+
+function resetSnake() {
+    if (snakeGame.gameLoop) clearInterval(snakeGame.gameLoop);
+    initSnake();
+}
+
+function gameOverSnake() {
+    clearInterval(snakeGame.gameLoop);
+    alert(`Game Over! Final Score: ${snakeGame.score}`);
+}
+
+// Chess Game
+let chessGame = {
+    board: [],
+    selectedSquare: null,
+    turn: 'white',
+    score: 0
+};
+
+function startChessGame() {
+    showGame("Chess Puzzles", createChessGame());
+    initChess();
+}
+
+function createChessGame() {
+    return `
+        <div class="text-center">
+            <div id="chessBoard" class="chess-board mx-auto mb-3"></div>
+            <div class="mt-3">
+                <p><strong>Puzzle Score: <span id="chessScore">0</span></strong></p>
+                <p>Click a piece, then click where you want to move it</p>
+                <button class="btn btn-dark" onclick="newChessPuzzle()">New Puzzle</button>
+            </div>
+        </div>
+    `;
+}
+
+function initChess() {
+    // Simple chess puzzle setup
+    chessGame.board = Array(64).fill('');
+    chessGame.board[4] = '♔'; // White King
+    chessGame.board[60] = '♚'; // Black King
+    chessGame.board[0] = '♖'; // White Rook
+    chessGame.board[7] = '♖'; // White Rook
+    chessGame.board[56] = '♜'; // Black Rook
+    chessGame.board[63] = '♜'; // Black Rook
+    chessGame.selectedSquare = null;
+    chessGame.score = 0;
+    
+    drawChessBoard();
+}
+
+function drawChessBoard() {
+    const board = document.getElementById('chessBoard');
+    if (!board) return;
+    
+    board.innerHTML = '';
+    board.style.display = 'grid';
+    board.style.gridTemplateColumns = 'repeat(8, 50px)';
+    board.style.border = '3px solid #8B4513';
+    
+    for (let i = 0; i < 64; i++) {
+        const square = document.createElement('div');
+        square.style.width = '50px';
+        square.style.height = '50px';
+        square.style.display = 'flex';
+        square.style.alignItems = 'center';
+        square.style.justifyContent = 'center';
+        square.style.fontSize = '1.5em';
+        square.style.cursor = 'pointer';
+        square.style.backgroundColor = (Math.floor(i/8) + i) % 2 === 0 ? '#F0D9B5' : '#B58863';
+        square.textContent = chessGame.board[i];
+        square.onclick = () => selectChessSquare(i);
+        square.id = `chess-square-${i}`;
+        
+        if (chessGame.selectedSquare === i) {
+            square.style.backgroundColor = '#FFD700';
+        }
+        
+        board.appendChild(square);
+    }
+}
+
+function selectChessSquare(index) {
+    if (chessGame.selectedSquare === null) {
+        if (chessGame.board[index]) {
+            chessGame.selectedSquare = index;
+            drawChessBoard();
+        }
+    } else {
+        // Move piece
+        chessGame.board[index] = chessGame.board[chessGame.selectedSquare];
+        chessGame.board[chessGame.selectedSquare] = '';
+        chessGame.selectedSquare = null;
+        chessGame.score += 5;
+        document.getElementById('chessScore').textContent = chessGame.score;
+        drawChessBoard();
+    }
+}
+
+function newChessPuzzle() {
+    initChess();
+}
+
+// Comedy Content
+function getComedyContent() {
+    fetch('/api/comedy_content')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('comedyContent').textContent = data.content;
+            const modal = new bootstrap.Modal(document.getElementById('comedyModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to get comedy content');
+        });
+}
+
+// Game Management
+function showGame(title, content) {
+    document.getElementById('gameTitle').textContent = title;
+    document.getElementById('gameArea').innerHTML = content;
+    document.getElementById('gameContainer').style.display = 'block';
+    document.getElementById('gameContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeGame() {
+    document.getElementById('gameContainer').style.display = 'none';
+    // Reset game states
+    flippedCards = [];
+    matchedPairs = 0;
+    flippedCount = 0;
+    ticTacToeBoard = Array(9).fill('');
+    currentTicTacToePlayer = 'X';
+}
+
+// 2048 Game
+function start2048Game() {
+    const html = `
+        <div class="game-2048">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="score-container bg-primary text-white p-2 rounded">
+                    <div class="score-title">SCORE</div>
+                    <div id="score" class="score">0</div>
+                </div>
+                <button class="btn btn-success" onclick="init2048()">New Game</button>
+            </div>
+            <div id="game-board" class="game-board"></div>
+            <p class="mt-3 text-muted">Use arrow keys to move the tiles. Tiles with the same number merge when they touch. Reach 2048 to win!</p>
+        </div>
+        <style>
+            .game-board { 
+                width: 400px; 
+                height: 400px; 
+                background-color: #f8f9fa; 
+                border: 2px solid #dee2e6;
+                border-radius: 6px; 
+                padding: 15px; 
+                position: relative; 
+                margin: 0 auto; 
+            }
+            .grid { 
+                display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                grid-gap: 10px; 
+                width: 100%; 
+                height: 100%; 
+            }
+            .cell { 
+                background-color: #e9ecef; 
+                border-radius: 4px; 
+            }
+            .tile { 
+                position: absolute; 
+                width: 80px; 
+                height: 80px; 
+                border-radius: 4px; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                font-size: 1.8rem; 
+                font-weight: bold; 
+                color: #495057; 
+                transition: all 0.1s ease-in-out; 
+                background-color: #e9ecef; 
+                border: 1px solid #dee2e6;
+            }
+            /* Tile colors using primary, secondary, and success colors */
+            .tile-2 { background-color: #e9ecef; }
+            .tile-4 { background-color: #dee2e6; }
+            .tile-8 { background-color: #c6e4ff; }
+            .tile-16 { background-color: #a0cfff; }
+            .tile-32 { background-color: #7ab6ff; color: white; }
+            .tile-64 { background-color: #549dff; color: white; }
+            .tile-128 { background-color: #0d6efd; color: white; font-size: 1.6rem; }
+            .tile-256 { background-color: #0b5ed7; color: white; font-size: 1.6rem; }
+            .tile-512 { background-color: #198754; color: white; font-size: 1.6rem; }
+            .tile-1024 { background-color: #157347; color: white; font-size: 1.4rem; }
+            .tile-2048 { background-color: #146c43; color: white; font-size: 1.4rem; }
+    `;
+    showGame('2048 Game', html);
+    init2048();
+}
+
+let board2048;
+let score2048;
+
+function init2048() {
+    board2048 = Array(4).fill().map(() => Array(4).fill(0));
+    score2048 = 0;
+    updateScore2048(0);
+    document.getElementById('game-board').innerHTML = `
+        <div class="grid">${'<div class="cell"></div>'.repeat(16)}</div>
+    `;
+    addRandomTile2048();
+    addRandomTile2048();
+    updateBoard2048();
+    document.removeEventListener('keydown', handleKeyDown2048);
+    document.addEventListener('keydown', handleKeyDown2048);
+}
+
+function updateScore2048(points) {
+    score2048 += points;
+    document.getElementById('score').textContent = score2048;
+}
+
+function addRandomTile2048() {
+    const emptyCells = [];
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (board2048[i][j] === 0) emptyCells.push({x: i, y: j});
+        }
+    }
+    if (emptyCells.length > 0) {
+        const {x, y} = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        board2048[x][y] = Math.random() < 0.9 ? 2 : 4;
+    }
+}
+
+function updateBoard2048() {
+    const gameBoard = document.querySelector('#game-board .grid');
+    gameBoard.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            if (board2048[i][j] !== 0) {
+                const tile = document.createElement('div');
+                tile.className = `tile tile-${board2048[i][j]}`;
+                tile.textContent = board2048[i][j];
+                // Fixed positioning: 90px per cell (80px tile + 10px gap)
+                tile.style.left = `${j * 90}px`;
+                tile.style.top = `${i * 90}px`;
+                gameBoard.appendChild(tile);
+            }
+        }
+    }
+}
+
+function handleKeyDown2048(e) {
+    if (['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) {
+        e.preventDefault();
+        const moved = moveTiles2048(e.key.replace('Arrow', '').toLowerCase());
+        if (moved) {
+            addRandomTile2048();
+            updateBoard2048();
+            if (isGameOver2048()) {
+                setTimeout(() => {
+                    alert(`Game Over! Your score: ${score2048}`);
+                    init2048();
+                }, 100);
+            }
+        }
+    }
+}
+
+function moveTiles2048(direction) {
+    let moved = false;
+    const newBoard = JSON.parse(JSON.stringify(board2048));
+    const size = 4;
+    
+    // Transpose the board for up/down movements
+    if (direction === 'up' || direction === 'down') {
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < i; j++) {
+                [newBoard[i][j], newBoard[j][i]] = [newBoard[j][i], newBoard[i][j]];
+            }
+        }
+    }
+    
+    // Reverse rows for right/down movements
+    if (direction === 'right' || direction === 'down') {
+        for (let i = 0; i < size; i++) {
+            newBoard[i].reverse();
+        }
+    }
+    
+    // Process each row
+    for (let i = 0; i < size; i++) {
+        const row = newBoard[i].filter(cell => cell !== 0);
+        const newRow = [];
+        let j = 0;
+        
+        while (j < row.length) {
+            if (j < row.length - 1 && row[j] === row[j + 1]) {
+                const mergedValue = row[j] * 2;
+                newRow.push(mergedValue);
+                updateScore2048(mergedValue);
+                j += 2;
+                moved = true;
+            } else {
+                newRow.push(row[j]);
+                j++;
+                moved = true;
+            }
+        }
+        
+        // Fill with zeros
+        while (newRow.length < size) {
+            newRow.push(0);
+        }
+        
+        // Check if row changed
+        if (JSON.stringify(newRow) !== JSON.stringify(newBoard[i])) {
+            moved = true;
+        }
+        
+        newBoard[i] = newRow;
+    }
+    
+    // Reverse back for right/down movements
+    if (direction === 'right' || direction === 'down') {
+        for (let i = 0; i < size; i++) {
+            newBoard[i].reverse();
+        }
+    }
+    
+    // Transpose back for up/down movements
+    if (direction === 'up' || direction === 'down') {
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < i; j++) {
+                [newBoard[i][j], newBoard[j][i]] = [newBoard[j][i], newBoard[i][j]];
+            }
+        }
+    }
+    
+    if (moved) {
+        board2048 = newBoard;
+    }
+    return moved;
+}
+
+function isGameOver2048() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (board2048[i][j] === 0) return false;
+            if (j < 3 && board2048[i][j] === board2048[i][j + 1]) return false;
+            if (i < 3 && board2048[i][j] === board2048[i + 1][j]) return false;
+        }
+    }
+    return true;
+}
+
+// Rock Paper Scissors Game
+function startRockPaperScissors() {
+    const html = `
+        <div class="text-center p-4">
+            <h3 class="mb-4">Rock Paper Scissors</h3>
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <button class="btn btn-primary btn-lg" onclick="playRPS('rock')">
+                    <i class="fas fa-hand-rock me-2"></i>Rock
+                </button>
+                <button class="btn btn-success btn-lg" onclick="playRPS('paper')">
+                    <i class="fas fa-hand-paper me-2"></i>Paper
+                </button>
+                <button class="btn btn-secondary btn-lg" onclick="playRPS('scissors')">
+                    <i class="fas fa-hand-scissors me-2"></i>Scissors
+                </button>
+            </div>
+            <div id="rpsResult" class="h5 mb-3 p-3 bg-light rounded"></div>
+            <div id="rpsScore" class="h5 mb-4">
+                <span class="badge bg-primary">You: 0</span>
+                <span class="mx-3">vs</span>
+                <span class="badge bg-secondary">Computer: 0</span>
+            </div>
+            <button class="btn btn-outline-dark" onclick="resetRPS()">
+                <i class="fas fa-redo me-2"></i>Reset Game
+            </button>
+    `;
+    showGame('Rock Paper Scissors', html);
+    resetRPS();
+}
+
+let rpsPlayerScore = 0;
+let rpsComputerScore = 0;
+
+function playRPS(playerChoice) {
+    const choices = ['rock', 'paper', 'scissors'];
+    const computerChoice = choices[Math.floor(Math.random() * 3)];
+    let result;
+    
+    if (playerChoice === computerChoice) {
+        result = "It's a tie!";
+    } else if (
+        (playerChoice === 'rock' && computerChoice === 'scissors') ||
+        (playerChoice === 'paper' && computerChoice === 'rock') ||
+        (playerChoice === 'scissors' && computerChoice === 'paper')
+    ) {
+        result = "You win!";
+        rpsPlayerScore++;
+    } else {
+        result = "Computer wins!";
+        rpsComputerScore++;
+    }
+    
+    const emojis = { rock: '✊', paper: '✋', scissors: '✌️' };
+    document.getElementById('rpsResult').innerHTML = `
+        You chose: ${emojis[playerChoice]} | Computer chose: ${emojis[computerChoice]}<br>
+        <strong>${result}</strong>
+    `;
+    document.getElementById('rpsScore').textContent = `Score: You ${rpsPlayerScore} - ${rpsComputerScore} Computer`;
+}
+
+function resetRPS() {
+    rpsPlayerScore = 0;
+    rpsComputerScore = 0;
+    document.getElementById('rpsResult').textContent = '';
+    document.getElementById('rpsScore').textContent = 'Score: You 0 - 0 Computer';
+}
+</script>
+{% endblock %}

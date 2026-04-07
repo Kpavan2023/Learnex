@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+
+{% block title %}AI Interview - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="text-primary mb-3">
+                    <i class="fas fa-microphone me-2"></i>AI Interview Simulator
+                </h2>
+                <h4 class="text-secondary">{{ subject.name }}</h4>
+                <p class="text-muted">Upload your resume for personalized interview questions or proceed with general questions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resume Upload Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-upload me-2"></i>Upload Resume (Optional)
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Upload your resume to get personalized interview questions based on your skills and experience.</p>
+                <div class="mb-3">
+                    <input type="file" class="form-control" id="resumeFile" accept=".pdf,.doc,.docx,.txt">
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-info" onclick="uploadResume()">
+                        <i class="fas fa-brain me-2"></i>Analyze Resume & Generate Questions
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="skipResume()">
+                        <i class="fas fa-forward me-2"></i>Skip & Use General Questions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <form id="interviewForm">
+            <input type="hidden" id="subjectId" value="{{ subject.id }}">
+            
+            {% for question in questions %}
+            <div class="card mb-4 question-card" data-question="{{ loop.index0 }}" style="{% if loop.index0 > 0 %}display: none;{% endif %}">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Question {{ loop.index }} of {{ questions|length }}</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-4">{{ question }}</h6>
+                    
+                    <div class="mb-3">
+                        <textarea class="form-control" name="answer_{{ loop.index0 }}" rows="6" 
+                                placeholder="Type your answer here..." required></textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mb-3">
+                        <button type="button" class="btn btn-outline-primary" onclick="startSpeechRecognition({{ loop.index0 }})">
+                            <i class="fas fa-microphone me-2"></i>Speech-to-Text
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearAnswer({{ loop.index0 }})">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                    </div>
+                    
+                    <div class="speech-status" id="speechStatus_{{ loop.index0 }}" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="fas fa-microphone me-2"></i>Listening... Speak now!
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons mt-4">
+                        {% if loop.index0 > 0 %}
+                        <button type="button" class="btn btn-outline-secondary" onclick="showQuestion({{ loop.index0 - 1 }})">
+                            <i class="fas fa-arrow-left me-2"></i>Previous
+                        </button>
+                        {% endif %}
+                        
+                        {% if loop.index0 < questions|length - 1 %}
+                        <button type="button" class="btn btn-outline-success float-end" onclick="showQuestion({{ loop.index0 + 1 }})">
+                            Next<i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Interview
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Interview Results</h5>
+            </div>
+            <div class="modal-body" id="resultsBody">
+                <!-- Results will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <a href="/student/subjects" class="btn btn-primary">Back to Subjects</a>
+                <button type="button" class="btn btn-secondary" onclick="retakeInterview()">Retake Interview</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Skills Input Modal -->
+<div class="modal fade" id="skillsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-cogs me-2"></i>Enter Your Technical Skills
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> Based on your skills, we'll generate personalized technical interview questions.
+                </div>
+                <form id="skillsForm">
+                    <div class="mb-3">
+                        <label for="technicalSkills" class="form-label">
+                            <i class="fas fa-laptop-code me-2"></i>Technical Skills (comma-separated)
+                        </label>
+                        <textarea class="form-control" id="technicalSkills" rows="3" 
+                                  placeholder="e.g., Python, JavaScript, React, Machine Learning, Data Analysis, SQL, AWS"
+                                  required></textarea>
+                        <small class="text-muted">Enter your technical skills separated by commas</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="experienceLevel" class="form-label">
+                            <i class="fas fa-chart-line me-2"></i>Experience Level
+                        </label>
+                        <select class="form-select" id="experienceLevel" required>
+                            <option value="">Select your experience level</option>
+                            <option value="beginner">Beginner (0-1 years)</option>
+                            <option value="intermediate">Intermediate (1-3 years)</option>
+                            <option value="advanced">Advanced (3+ years)</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-arrow-right me-2"></i>Generate Interview Questions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentQuestion = 0;
+let recognition = null;
+let interviewQuestions = {{ questions|tojson }};
+let resumeAnalyzed = false;
+
+// Resume upload functionality
+function uploadResume() {
+    const fileInput = document.getElementById('resumeFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select a resume file first.');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('resume', file);
+    
+    const uploadBtn = document.querySelector('button[onclick="uploadResume()"]');
+    const originalText = uploadBtn.innerHTML;
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing Resume...';
+    uploadBtn.disabled = true;
+    
+    fetch('/student/upload_resume', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            interviewQuestions = data.questions;
+            resumeAnalyzed = true;
+            
+            // Show extracted information
+            alert(`Resume analyzed successfully!\n\nExtracted Skills: ${data.extracted_skills.join(', ')}\n\nExtracted Projects: ${data.extracted_projects.join(', ')}\n\nGenerated ${data.questions.length} personalized questions.`);
+            
+            // Hide upload section and show interview with new questions
+            document.querySelector('.card.border-info').style.display = 'none';
+            updateInterviewQuestions(data.questions);
+        } else {
+            alert(data.message || 'Failed to analyze resume');
+        }
+        
+        uploadBtn.innerHTML = originalText;
+        uploadBtn.disabled = false;
+        
+        // Show skills input modal
+        const skillsModal = new bootstrap.Modal(document.getElementById('skillsModal'));
+        skillsModal.show();
+    })
+    .catch(error =e {
+        console.error('Error:', error);
+        alert('An error occurred while analyzing the resume');
+        uploadBtn.innerHTML = originalText;
+        uploadBtn.disabled = false;
+    });
+}
+
+// Handle skills form submission
+document.getElementById('skillsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const technicalSkills = document.getElementById('technicalSkills').value.trim();
+    const skillsArray = technicalSkills.split(',').map(skill = 3e skill.trim()).filter(skill = 3e skill !== '');
+    const experienceLevel = document.getElementById('experienceLevel').value;
+    
+    if (skillsArray.length === 0 || experienceLevel === '') {
+        alert('Please enter valid skills and experience level.');
+        return;
+    }
+    
+    // Mock call to generate interview questions based on skills
+    const questions = skillsArray.map(skill = 3e `Explain a project where you used ${skill}.`);
+    updateInterviewQuestions(questions);
+    
+    const skillsModal = bootstrap.Modal.getInstance(document.getElementById('skillsModal'));
+    if (skillsModal) skillsModal.hide();
+});
+
+function skipResume() {
+    // Hide upload section and proceed with general questions
+    document.querySelector('.card.border-info').style.display = 'none';
+}
+
+function updateInterviewQuestions(newQuestions) {
+    // Update the interview form with new questions
+    const form = document.getElementById('interviewForm');
+    let questionsHtml = '<input type="hidden" id="subjectId" value="{{ subject.id }}">';
+    
+    newQuestions.forEach((question, index) => {
+        questionsHtml += `
+            <div class="card mb-4 question-card" data-question="${index}" style="${index > 0 ? 'display: none;' : ''}">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Question ${index + 1} of ${newQuestions.length}</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-4">${question}</h6>
+                    
+                    <div class="mb-3">
+                        <textarea class="form-control" name="answer_${index}" rows="6" 
+                                placeholder="Type your answer here..." required></textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mb-3">
+                        <button type="button" class="btn btn-outline-primary" onclick="startSpeechRecognition(${index})">
+                            <i class="fas fa-microphone me-2"></i>Speech-to-Text
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearAnswer(${index})">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                    </div>
+                    
+                    <div class="speech-status" id="speechStatus_${index}" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="fas fa-microphone me-2"></i>Listening... Speak now!
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons mt-4">
+                        ${index > 0 ? `<button type="button" class="btn btn-outline-secondary" onclick="showQuestion(${index - 1})"><i class="fas fa-arrow-left me-2"></i>Previous</button>` : ''}
+                        ${index < newQuestions.length - 1 ? `<button type="button" class="btn btn-outline-success float-end" onclick="showQuestion(${index + 1})">Next<i class="fas fa-arrow-right ms-2"></i></button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    questionsHtml += `
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="fas fa-paper-plane me-2"></i>Submit Interview
+            </button>
+        </div>
+    `;
+    
+    form.innerHTML = questionsHtml;
+    currentQuestion = 0;
+}
+
+// Initialize speech recognition if available
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+});
+
+function showQuestion(index) {
+    const questions = document.querySelectorAll('.question-card');
+    questions.forEach((q, i) => {
+        q.style.display = i === index ? 'block' : 'none';
+    });
+    
+    currentQuestion = index;
+    updateProgress();
+}
+
+function updateProgress() {
+    const totalQuestions = {{ questions|length }};
+    const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+}
+
+function startSpeechRecognition(questionIndex) {
+    if (!recognition) {
+        alert('Speech recognition is not supported in your browser. Please type your answer.');
+        return;
+    }
+    
+    const textarea = document.querySelector(`textarea[name="answer_${questionIndex}"]`);
+    const statusDiv = document.getElementById(`speechStatus_${questionIndex}`);
+    
+    statusDiv.style.display = 'block';
+    
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        textarea.value += (textarea.value ? ' ' : '') + transcript;
+        statusDiv.style.display = 'none';
+    };
+    
+    recognition.onerror = function(event) {
+        console.error('Speech recognition error:', event.error);
+        statusDiv.style.display = 'none';
+        alert('Speech recognition failed. Please try again or type your answer.');
+    };
+    
+    recognition.onend = function() {
+        statusDiv.style.display = 'none';
+    };
+    
+    recognition.start();
+}
+
+function clearAnswer(questionIndex) {
+    const textarea = document.querySelector(`textarea[name="answer_${questionIndex}"]`);
+    textarea.value = '';
+}
+
+function retakeInterview() {
+    window.location.reload();
+}
+
+// Handle form submission
+document.getElementById('interviewForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect all answers
+    const answers = [];
+    const textareas = document.querySelectorAll('textarea[name^="answer_"]');
+    
+    let hasEmptyAnswers = false;
+    textareas.forEach((textarea, index) => {
+        const answer = textarea.value.trim();
+        if (!answer) {
+            hasEmptyAnswers = true;
+            showQuestion(index);
+            textarea.focus();
+            return;
+        }
+        answers.push(answer);
+    });
+    
+    if (hasEmptyAnswers) {
+        alert('Please answer all questions before submitting.');
+        return;
+    }
+    
+    const formData = {
+        subject_id: parseInt(document.getElementById('subjectId').value),
+        answers: answers
+    };
+    
+    // Disable submit button
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    
+    fetch('/student/submit_interview', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showResults(data);
+        } else {
+            alert(data.message || 'Failed to submit interview');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Interview';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the interview');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Interview';
+    });
+});
+
+function showResults(data) {
+    const body = document.getElementById('resultsBody');
+    
+    body.innerHTML = `
+        <div class="text-center mb-4">
+            <i class="fas fa-${data.passed ? 'check-circle' : 'exclamation-triangle'} fa-4x text-${data.passed ? 'success' : 'warning'} mb-3"></i>
+            <h3>Interview ${data.passed ? 'Completed Successfully!' : 'Needs Improvement'}</h3>
+            <p class="lead">Your responses have been evaluated by our AI system.</p>
+        </div>
+        
+        <div class="row text-center mb-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-primary">${data.score}</h5>
+                        <small class="text-muted">Total Score</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-info">${data.max_score}</h5>
+                        <small class="text-muted">Maximum Score</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-${data.passed ? 'success' : 'warning'}">${data.passed ? 'PASS' : 'REVIEW'}</h5>
+                        <small class="text-muted">Result</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h6>Detailed Feedback:</h6>
+            <div class="list-group">
+                ${data.feedback.map((item, index) => `
+                    <div class="list-group-item">
+                        <small class="text-muted">Question ${index + 1}:</small><br>
+                        ${item}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-4">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Note:</strong> Your interview responses have been sent to your teacher for review and additional feedback.
+        </div>
+        
+        <div class="mt-4">
+            <h6>Tips for Improvement:</h6>
+            <ul>
+                <li>Provide more detailed and technical answers</li>
+                <li>Include specific examples from your experience</li>
+                <li>Practice explaining complex concepts clearly</li>
+                <li>Research common interview questions for your field</li>
+                <li>Consider taking additional courses to strengthen weak areas</li>
+            </ul>
+        </div>
+    `;
+    
+    const modalInstance = new bootstrap.Modal(document.getElementById('resultsModal'));
+    modalInstance.show();
+}
+
+// Add some interview tips
+document.addEventListener('DOMContentLoaded', function() {
+    // Add a tips section at the top
+    const tipsHtml = `
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Interview Tips</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-check text-success me-2"></i>Be specific and provide examples</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Speak clearly and confidently</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Take your time to think before answering</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-check text-success me-2"></i>Use technical terms appropriately</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Show enthusiasm for the subject</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Ask questions to show interest</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const firstCard = document.querySelector('.question-card');
+    if (firstCard) {
+        firstCard.insertAdjacentHTML('beforebegin', tipsHtml);
+    }
+});
+</script>
+{% endblock %}

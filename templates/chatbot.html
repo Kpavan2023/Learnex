@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+
+{% block title %}AI Learning Assistant - Chatbot{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-robot me-3 fs-4"></i>
+                        <div>
+                            <h4 class="mb-0">AI Learning Assistant</h4>
+                            <small class="opacity-75">Your personal learning companion</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <!-- Chat Messages Container -->
+                    <div id="chatContainer" class="chat-container" style="height: 500px; overflow-y: auto; padding: 20px; background: #f8f9fa;">
+                        <div class="text-center mb-3">
+                            <div class="badge bg-info text-white p-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                I can help you with subjects, quizzes, assignments, and more!
+                            </div>
+                        </div>
+                        
+                        <!-- Welcome Message -->
+                        <div class="message bot-message mb-3">
+                            <div class="d-flex">
+                                <div class="avatar-bot me-2">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                </div>
+                                <div class="message-content">
+                                    <div class="bg-white rounded-3 p-3 shadow-sm">
+                                        <p class="mb-0">Hello! I'm your AI learning assistant. I can help you with programming languages (Python, Java, JavaScript, etc.), concepts, subjects, assignments, quizzes, and general learning topics. Try asking me "What is Python?" or click the quick buttons below!</p>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">Just now</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions p-3 border-top bg-light">
+                        <div class="mb-2">
+                            <small class="text-muted fw-bold">Quick Actions:</small>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-sm btn-outline-primary quick-action-btn" data-message="Tell me about available subjects">
+                                <i class="fas fa-book me-1"></i>Subjects
+                            </button>
+                            <button class="btn btn-sm btn-outline-success quick-action-btn" data-message="How do quizzes work?">
+                                <i class="fas fa-question-circle me-1"></i>Quizzes
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning quick-action-btn" data-message="What assignments are available?">
+                                <i class="fas fa-tasks me-1"></i>Assignments
+                            </button>
+                            <button class="btn btn-sm btn-outline-info quick-action-btn" data-message="Help me prepare for interviews">
+                                <i class="fas fa-user-tie me-1"></i>Interviews
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary quick-action-btn" data-message="Show my learning progress">
+                                <i class="fas fa-chart-line me-1"></i>Progress
+                            </button>
+                            <button class="btn btn-sm btn-outline-dark quick-action-btn" data-message="What is Python?">
+                                <i class="fab fa-python me-1"></i>Python
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger quick-action-btn" data-message="What is Java?">
+                                <i class="fab fa-java me-1"></i>Java
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning quick-action-btn" data-message="What is JavaScript?">
+                                <i class="fab fa-js me-1"></i>JavaScript
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="input-area p-3 border-top bg-white">
+                        <form id="chatForm">
+                            <div class="input-group">
+                                <input type="text" id="messageInput" class="form-control" placeholder="Type your message here..." maxlength="500" required>
+                                <button class="btn btn-primary" type="submit" id="sendButton">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span class="d-none d-md-inline ms-1">Send</span>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb text-warning"></i>
+                                    Tip: Ask me "What is Python?", "What is Java?", "What is programming?", or any programming concept!
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt text-success me-1"></i>
+                        Your conversations are private and used to improve your learning experience
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-container {
+    background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+}
+
+.message {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.user-message .message-content {
+    margin-left: auto;
+    max-width: 70%;
+}
+
+.bot-message .message-content {
+    max-width: 70%;
+}
+
+.user-message .bg-white {
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    color: white;
+}
+
+.typing-indicator {
+    display: none;
+}
+
+.typing-indicator.active {
+    display: block;
+}
+
+.typing-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #667eea;
+    animation: typing 1.4s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% { transform: scale(1); opacity: 1; }
+    30% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+}
+
+.avatar-bot {
+    flex-shrink: 0;
+}
+
+.avatar-user {
+    flex-shrink: 0;
+}
+
+.avatar-user .rounded-circle {
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+}
+
+#messageInput:focus {
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+}
+
+.send-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.message-content p {
+    margin-bottom: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatForm = document.getElementById('chatForm');
+    const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+    
+    // Generate unique session ID
+    const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    // Auto-scroll to bottom
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Add message to chat
+    function addMessage(message, isUser = false, timestamp = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'} mb-3`;
+        
+        const time = timestamp || new Date().toLocaleTimeString();
+        
+        if (isUser) {
+            messageDiv.innerHTML = `
+                <div class="d-flex justify-content-end">
+                    <div class="message-content">
+                        <div class="bg-primary text-white rounded-3 p-3 shadow-sm">
+                            <p class="mb-0">${escapeHtml(message)}</p>
+                        </div>
+                        <small class="text-muted mt-1 d-block text-end">${time}</small>
+                    </div>
+                    <div class="avatar-user ms-2">
+                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="d-flex">
+                    <div class="avatar-bot me-2">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        <div class="bg-white rounded-3 p-3 shadow-sm">
+                            <p class="mb-0">${message}</p>
+                        </div>
+                        <small class="text-muted mt-1 d-block">${time}</small>
+                    </div>
+                </div>
+            `;
+        }
+        
+        chatContainer.appendChild(messageDiv);
+        scrollToBottom();
+    }
+    
+    // Show typing indicator
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message mb-3 typing-indicator';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+            <div class="d-flex">
+                <div class="avatar-bot me-2">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                </div>
+                <div class="message-content">
+                    <div class="bg-white rounded-3 p-3 shadow-sm">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        chatContainer.appendChild(typingDiv);
+        scrollToBottom();
+    }
+    
+    // Hide typing indicator
+    function hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+    
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+    
+    // Send message to chatbot
+    async function sendMessage(message) {
+        // Add user message
+        addMessage(message, true);
+        
+        // Clear input and disable send button
+        messageInput.value = '';
+        sendButton.disabled = true;
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    session_id: sessionId
+                })
+            });
+            
+            const data = await response.json();
+            
+            // Hide typing indicator
+            hideTypingIndicator();
+            
+            if (data.success) {
+                addMessage(data.response, false, data.timestamp);
+            } else {
+                addMessage('Sorry, I encountered an error. Please try again.', false);
+            }
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage('Sorry, I\'m having trouble connecting. Please check your internet connection and try again.', false);
+            console.error('Chat error:', error);
+        } finally {
+            sendButton.disabled = false;
+            messageInput.focus();
+        }
+    }
+    
+    // Handle form submission
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+            sendMessage(message);
+        }
+    });
+    
+    // Handle quick action buttons
+    quickActionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const message = this.getAttribute('data-message');
+            messageInput.value = message;
+            sendMessage(message);
+        });
+    });
+    
+    // Handle Enter key in input
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+    });
+    
+    // Focus on input
+    messageInput.focus();
+    
+    // Initial scroll to bottom
+    scrollToBottom();
+});
+</script>
+{% endblock %}

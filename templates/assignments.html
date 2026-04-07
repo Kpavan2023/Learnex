@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-primary mb-3">
+                    <i class="fas fa-clipboard-list me-2"></i>{{ subject.name }} - Assignments
+                </h2>
+                <p class="text-muted">Complete these assignments to strengthen your understanding of {{ subject.name }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assignment Questions -->
+<div class="row">
+    <!-- Basic Assignment -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-seedling me-2"></i>Basic Assignment (Level 1)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-success">Points: 50</span>
+                </div>
+                
+                <div class="assignment-questions">
+                    <h6 class="text-primary mb-3">Questions:</h6>
+                    <ol class="list-group list-group-numbered">
+                        {% for question in basic_questions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">{{ question.title }}</div>
+                                <p class="mb-1">{{ question.description }}</p>
+                            </div>
+                            <span class="badge bg-success rounded-pill">{{ question.points }} pts</span>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Assignment -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-rocket me-2"></i>Advanced Assignment (Level 2)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-warning">Points: 100</span>
+                </div>
+                
+                <div class="assignment-questions">
+                    <h6 class="text-primary mb-3">Questions:</h6>
+                    <ol class="list-group list-group-numbered" start="6">
+                        {% for question in advanced_questions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">{{ question.title }}</div>
+                                <p class="mb-1">{{ question.description }}</p>
+                            </div>
+                            <span class="badge bg-warning rounded-pill">{{ question.points }} pts</span>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

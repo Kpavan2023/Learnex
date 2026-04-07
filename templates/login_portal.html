@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AI Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                <h2 class="text-primary">Welcome to AI Learning Platform</h2>
+                <p class="text-muted mb-4">Please select your login type to continue</p>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-info mb-3"></i>
+                                <h4 class="text-info">Teacher Portal</h4>
+                                <p class="text-muted">Access teacher dashboard, manage students, and view analytics</p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-info" onclick="showLogin('teacher')">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login as Teacher
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="showRegister('teacher')">
+                                        <i class="fas fa-user-plus me-2"></i>Register as Teacher
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-graduate fa-3x text-success mb-3"></i>
+                                <h4 class="text-success">Student Portal</h4>
+                                <p class="text-muted">Access courses, take quizzes, and track your progress</p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" onclick="showLogin('student')">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login as Student
+                                    </button>
+                                    <button class="btn btn-outline-success" onclick="showRegister('student')">
+                                        <i class="fas fa-user-plus me-2"></i>Register as Student
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="loginModalHeader">
+                <h5 class="modal-title" id="loginModalTitle">
+                    <i class="fas fa-user me-2"></i>Login
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <input type="hidden" id="userType" name="user_type">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword" onclick="togglePasswordVisibility('password')">
+                                <i class="fas fa-eye" id="passwordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                <div class="text-center">
+                    <h6>Demo Accounts</h6>
+                    <small class="text-muted" id="demoCredentials"></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="registerModalHeader">
+                <h5 class="modal-title" id="registerModalTitle">
+                    <i class="fas fa-user-plus me-2"></i>Register
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <input type="hidden" id="registerUserType" name="user_type">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="registerUsername" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="registerPassword" name="password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleRegisterPassword" onclick="togglePasswordVisibility('registerPassword')">
+                                <i class="fas fa-eye" id="registerPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword')">
+                                <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.login-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.input-group .btn {
+    border-left: none;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+.input-group .form-control {
+    border-right: none;
+    border-radius: 0.375rem 0 0 0.375rem;
+}
+.input-group .form-control:focus {
+    z-index: 1;
+}
+</style>
+
+<script>
+// Auto-select user type based on URL parameter
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userType = urlParams.get('type') || '{{ default_user_type }}' || 'teacher';
+    
+    if (userType === 'teacher') {
+        showLogin('teacher');
+    } else if (userType === 'student') {
+        showLogin('student');
+    }
+});
+
+function showLogin(type) {
+    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+    const userTypeInput = document.getElementById('userType');
+    const modalTitle = document.getElementById('loginModalTitle');
+    const modalHeader = document.getElementById('loginModalHeader');
+    const demoCredentials = document.getElementById('demoCredentials');
+    
+    userTypeInput.value = type;
+    
+    if (type === 'teacher') {
+        modalTitle.innerHTML = '<i class="fas fa-chalkboard-teacher me-2"></i>Teacher Login';
+        modalHeader.className = 'modal-header bg-info text-white';
+        demoCredentials.innerHTML = 'Username: teacher1<br>Password: teacher123';
+    } else {
+        modalTitle.innerHTML = '<i class="fas fa-user-graduate me-2"></i>Student Login';
+        modalHeader.className = 'modal-header bg-success text-white';
+        demoCredentials.innerHTML = 'Username: student1<br>Password: student123';
+    }
+    
+    modal.show();
+}
+
+function showRegister(type) {
+    const modal = new bootstrap.Modal(document.getElementById('registerModal'));
+    const userTypeInput = document.getElementById('registerUserType');
+    const modalTitle = document.getElementById('registerModalTitle');
+    const modalHeader = document.getElementById('registerModalHeader');
+    
+    userTypeInput.value = type;
+    
+    if (type === 'teacher') {
+        modalTitle.innerHTML = '<i class="fas fa-chalkboard-teacher me-2"></i>Teacher Registration';
+        modalHeader.className = 'modal-header bg-info text-white';
+    } else {
+        modalTitle.innerHTML = '<i class="fas fa-user-graduate me-2"></i>Student Registration';
+        modalHeader.className = 'modal-header bg-success text-white';
+    }
+    
+    modal.show();
+}
+
+// Password visibility toggle function
+function togglePasswordVisibility(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const iconId = inputId + 'Icon';
+    const icon = document.getElementById(iconId);
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const loginData = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+        user_type: formData.get('user_type')
+    };
+    
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.user_type === 'teacher') {
+                window.location.href = '/teacher/dashboard';
+            } else {
+                window.location.href = '/student/dashboard';
+            }
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during login');
+    });
+});
+
+// Handle Registration Form Submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+    }
+
+    const registerData = {
+        username: document.getElementById('registerUsername').value,
+        email: document.getElementById('registerEmail').value,
+        password: password,
+        user_type: document.getElementById('registerUserType').value
+    };
+
+    fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Registration successful! Please log in.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            if (modal) {
+                // Remove focus from any focused element before hiding modal
+                document.activeElement.blur();
+                modal.hide();
+            }
+            // Clear the form
+            document.getElementById('registerForm').reset();
+        } else {
+            console.log('Registration error data:', data);
+            const errorMessage = typeof data.message === 'object' ? JSON.stringify(data.message) : data.message;
+            alert('Registration failed: ' + (errorMessage || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Registration Error:', error);
+        alert('An error occurred during registration!');
+    });
+});
+
+</script>
+{% endblock %}

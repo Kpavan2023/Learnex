@@ -1,0 +1,22 @@
+John Doe
+Software Engineer
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology
+GPA: 3.8
+
+EXPERIENCE
+5 years of experience in software development
+Worked on various web applications using Python and JavaScript
+Developed machine learning models for data analysis
+Managed a team of 3 developers
+Led the architecture of microservices-based systems
+
+SKILLS
+Python, Java, JavaScript, React, Node.js, SQL, MongoDB, AWS, Docker, Git, TensorFlow, Machine Learning
+
+PROJECTS
+E-commerce Platform - Developed a full-stack web application
+Data Analytics Dashboard - Created ML-powered analytics tool
+Mobile App - Built React Native application for iOS and Android

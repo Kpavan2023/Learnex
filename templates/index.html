@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}AI-Powered Smart Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-11">
+        <!-- Hero Section -->
+        <div class="card mb-5">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-brain fa-5x text-primary mb-3"></i>
+                    <h1 class="display-4 fw-bold rainbow-text mb-3">AI-Powered Smart Learning Platform</h1>
+                    <p class="lead text-muted">Revolutionizing education with artificial intelligence for both students and teachers</p>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-0 bg-primary">
+                            <div class="card-body text-white text-center">
+                                <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+                                <h3>For Teachers</h3>
+                                <p>Manage subjects, generate question papers, track student performance, and get AI-powered insights</p>
+                                <a href="/login?type=teacher" class="btn btn-light btn-lg">Login as Teacher</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-0 bg-success">
+                            <div class="card-body text-white text-center">
+                                <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                                <h3>For Students</h3>
+                                <p>Access personalized learning paths, take quizzes, practice interviews, and enjoy educational games</p>
+                                <a href="/login?type=student" class="btn btn-light btn-lg">Login as Student</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Project Section -->
+        <div class="card mb-5">
+            <div class="card-header bg-info text-white">
+                <h3><i class="fas fa-info-circle me-2"></i>About Our AI Learning Platform</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="text-primary mb-3"></h4>
+                        <p class="lead">Our AI-Powered Smart Learning Platform is a comprehensive educational ecosystem that leverages artificial intelligence to enhance the learning experience for both students and teachers.</p>
+                        
+                        <h5 class="text-success mb-3">🎯 Key Objectives</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Personalized learning paths using AI algorithms</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Automated assessment and performance tracking</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Resume analysis and scoring system</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Engagement monitoring and gamification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <h2 class="text-center text-primary mb-5">
+                    <i class="fas fa-star me-2"></i>Comprehensive Platform Features
+                </h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Teacher Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h4><i class="fas fa-chalkboard-teacher me-2"></i>Teacher Features</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-book text-primary me-2"></i>
+                                <strong>Subject & Content Management:</strong> Add, update, and organize subjects and learning materials
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-file-alt text-primary me-2"></i>
+                                <strong>AI Question Paper Generator:</strong> Generate random question papers based on difficulty and syllabus
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-chart-line text-primary me-2"></i>
+                                <strong>Performance Prediction:</strong> ML-powered predictions of student performance
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-tasks text-primary me-2"></i>
+                                <strong>Quiz Monitoring:</strong> Track student quiz performance and score trends
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-lightbulb text-primary me-2"></i>
+                                <strong>Topic Recommendations:</strong> AI suggests what topics students should focus on
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-microphone text-primary me-2"></i>
+                                <strong>Interview Evaluation:</strong> Review AI-simulated interviews submitted by students
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-file-upload text-primary me-2"></i>
+                                <strong>Resume Analysis:</strong> AI-powered resume scoring and feedback system
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4><i class="fas fa-user-graduate me-2"></i>Student Features</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-route text-success me-2"></i>
+                                <strong>Learning Path:</strong> Personalized subject listing and AI-driven learning sequences
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-eye text-success me-2"></i>
+                                <strong>Engagement Tracker:</strong> Detects inactivity and suggests breaks or games
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-question-circle text-success me-2"></i>
+                                <strong>Multi-Level Quizzes:</strong> Level 1 (10Q), Level 2 (20Q), Level 3 (30Q) with detailed feedback
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-clipboard-list text-success me-2"></i>
+                                <strong>Smart Assignments:</strong> Topic-based assignments with point system
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-user-tie text-success me-2"></i>
+                                <strong>AI Interview Simulator:</strong> Practice interviews with typed or speech-to-text responses
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-gamepad text-success me-2"></i>
+                                <strong>Educational Games:</strong> Mini-games and comedy content for study breaks
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-file-upload text-success me-2"></i>
+                                <strong>Resume Scoring:</strong> Upload resume for AI analysis with detailed scoring breakdown
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="card mb-5">
+            <div class="card-header bg-warning text-dark">
+                <h4><i class="fas fa-chart-bar me-2"></i>Platform Capabilities</h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <i class="fas fa-database fa-3x text-primary mb-2"></i>
+                                <h5>50+ Subjects</h5>
+                                <p class="text-muted">Comprehensive subject coverage</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <i class="fas fa-question fa-3x text-success mb-2"></i>
+                                <h5>1000+ Questions</h5>
+                                <p class="text-muted">Across multiple difficulty levels</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <i class="fas fa-brain fa-3x text-info mb-2"></i>
+                                <h5>AI-Powered</h5>
+                                <p class="text-muted">Smart learning recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <i class="fas fa-chart-line fa-3x text-warning mb-2"></i>
+                                <h5>Real-time Analytics</h5>
+                                <p class="text-muted">Performance tracking & insights</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}AI Performance Prediction{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-primary mb-3">
+                    <i class="fas fa-brain me-2"></i>AI Performance Prediction
+                </h2>
+                <p class="text-muted">Get personalized performance predictions and recommendations based on your learning attributes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Enter Your Learning Attributes
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="predictionForm" action="/student/performance_prediction" method="POST">
+                    <div class="alert alert-info">
+                        <i class="fas fa-robot me-2"></i><strong>ML-Powered Prediction:</strong> This system uses a trained Linear Regression model to predict your final score based on study habits.
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="hours_studied" class="form-label">
+                                <i class="fas fa-clock text-primary me-2"></i>Hours Studied
+                            </label>
+                            <input type="number" step="0.1" min="0" max="10" class="form-control" id="hours_studied" name="hours_studied" required>
+                            <small class="text-muted">Daily study hours (e.g., 3.5)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="attendance_percentage" class="form-label">
+                                <i class="fas fa-calendar-check text-info me-2"></i>Attendance Percentage
+                            </label>
+                            <input type="number" min="0" max="100" class="form-control" id="attendance_percentage" name="attendance_percentage" required>
+                            <small class="text-muted">Class attendance percentage (0-100%)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="previous_score" class="form-label">
+                                <i class="fas fa-trophy text-success me-2"></i>Previous Score
+                            </label>
+                            <input type="number" min="0" max="100" class="form-control" id="previous_score" name="previous_score" required>
+                            <small class="text-muted">Your previous exam or test score (0-100)</small>
+                        </div>
+                    </div>
+                    
+                        
+                    
+                        
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-brain me-2"></i>Predict My Score (ML Model)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Simple form submission - no JavaScript prediction needed
+// The form will submit to the Flask route which uses the ML model
+console.log('ML-powered prediction form ready');
+</script>
+{% endblock %}

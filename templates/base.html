@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Powered Smart Learning Platform{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+        }
+        .btn-primary {
+            background: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 6px;
+            padding: 8px 16px;
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-success {
+            background: #28a745;
+            border: 1px solid #28a745;
+        }
+        .btn-success:hover {
+            background: #1e7e34;
+            border-color: #1e7e34;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            border: 1px solid #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+            border-color: #545b62;
+        }
+        .btn-outline-primary {
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+        .btn-outline-primary:hover {
+            background: #007bff;
+            color: #ffffff;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+        .btn-outline-success:hover {
+            background: #28a745;
+            color: #ffffff;
+        }
+        .btn-outline-secondary {
+            color: #6c757d;
+            border: 1px solid #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+        }
+        .progress-bar {
+            background: #28a745;
+            border-radius: 4px;
+        }
+        .alert {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 10px 12px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .quiz-option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        .quiz-option:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+        .quiz-option.selected {
+            background: #e7f3ff;
+            border-color: #007bff;
+        }
+        .sidebar {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .engagement-tracker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        /* Rainbow colors */
+        .rainbow-header {
+            background: linear-gradient(90deg, 
+                #ff0000 0%, 
+                #ff7f00 14%, 
+                #ffff00 28%, 
+                #00ff00 42%, 
+                #0000ff 56%, 
+                #4b0082 70%, 
+                #9400d3 84%, 
+                #ff0000 100%);
+            height: 8px;
+            width: 100%;
+        }
+        .rainbow-border {
+            border: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) border-box;
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        /* Override Bootstrap colors with our 3-color scheme */
+        .bg-info { background-color: #007bff !important; }
+        .bg-warning { background-color: #6c757d !important; }
+        .bg-danger { background-color: #6c757d !important; }
+        .text-info { color: #007bff !important; }
+        .text-warning { color: #6c757d !important; }
+        .text-danger { color: #6c757d !important; }
+        .badge-info { background-color: #007bff !important; }
+        .badge-warning { background-color: #6c757d !important; }
+        .badge-danger { background-color: #6c757d !important; }
+        .alert-info { background-color: #e7f3ff; border-color: #007bff; color: #004085; }
+        .alert-warning { background-color: #f8f9fa; border-color: #6c757d; color: #383d41; }
+        .alert-danger { background-color: #f8f9fa; border-color: #6c757d; color: #383d41; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain text-primary me-2"></i>
+                <strong class="text-primary">AI Learning Platform</strong>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    {% if session.get('user_type') == 'teacher' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/teacher/dashboard">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Teacher Dashboard
+                        </a>
+                    </li>
+                    {% elif session.get('user_type') == 'student' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/student/dashboard">
+                            <i class="fas fa-user-graduate me-1"></i>Student Dashboard
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if session.get('user_id') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ session.get('username') }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/logout">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/login">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Engagement Tracker for Students -->
+    <div class="engagement-tracker" id="engagementTracker" style="display: none;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-eye text-primary me-2"></i>
+            <small>Engagement: <span id="engagementStatus">Active</span></small>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Engagement Tracking Script for Students -->
+    <script>
+        // Show engagement tracker only on student pages
+        if (window.location.pathname.includes('/student')) {
+            document.getElementById('engagementTracker').style.display = 'block';
+            
+            let inactivityTime = 0;
+            let inactivityPeriods = 0;
+            let activityStartTime = Date.now();
+            
+            // Reset inactivity timer on user activity
+            function resetInactivityTimer() {
+                inactivityTime = 0;
+                document.getElementById('engagementStatus').textContent = 'Active';
+                document.getElementById('engagementTracker').style.borderColor = '#007bff';
+            }
+            
+            // Track user activity
+            document.addEventListener('mousemove', resetInactivityTimer);
+            document.addEventListener('keypress', resetInactivityTimer);
+            document.addEventListener('click', resetInactivityTimer);
+            document.addEventListener('scroll', resetInactivityTimer);
+            
+            // Check for inactivity every 5 seconds
+            setInterval(function() {
+                inactivityTime += 5;
+                
+                if (inactivityTime >= 30) { // 30 seconds of inactivity
+                    inactivityPeriods++;
+                    document.getElementById('engagementStatus').textContent = 'Inactive';
+                    document.getElementById('engagementTracker').style.borderColor = '#6c757d';
+                    
+                    if (inactivityPeriods >= 3) {
+                        // Show break suggestion
+                        if (confirm('Are you bored? Want to take a short game break or continue studying?')) {
+                            window.location.href = '/student/games';
+                        } else {
+                            inactivityPeriods = 0; // Reset if user chooses to continue
+                        }
+                    }
+                    
+                    // Send engagement data to server
+                    fetch('/api/engagement_check', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            activity_type: window.location.pathname,
+                            duration: Math.floor((Date.now() - activityStartTime) / 1000),
+                            inactivity_periods: inactivityPeriods
+                        })
+                    });
+                    
+                    inactivityTime = 0; // Reset timer
+                }
+            }, 5000);
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

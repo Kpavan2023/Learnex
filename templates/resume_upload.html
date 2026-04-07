@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analysis - AI Learning Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-file-upload fa-4x text-primary mb-3"></i>
+                <h2 class="text-primary mb-3">AI Resume Analysis</h2>
+                <p class="text-muted">Upload your resume to get personalized interview questions and skill assessments</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Resume Upload Section -->
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-upload me-2"></i>Upload Your Resume
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Upload your resume (PDF, DOC, DOCX, or TXT format) to get AI-powered analysis and personalized interview questions.</p>
+                
+                <div class="mb-4">
+                    <div class="border-dashed border-2 border-primary rounded p-4 text-center bg-light">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                        <h6>Drop your resume here or click to browse</h6>
+                        <input type="file" class="form-control" id="resumeFile" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                        <button class="btn btn-outline-primary" onclick="document.getElementById('resumeFile').click()">
+                            <i class="fas fa-folder-open me-2"></i>Choose File
+                        </button>
+                        <div id="fileName" class="mt-2 text-muted"></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-primary btn-lg" onclick="uploadResume()" id="uploadBtn" disabled>
+                        <i class="fas fa-brain me-2"></i>Analyze Resume & Generate Questions
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results Section -->
+        <div class="card mt-4" id="resultsCard" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Analysis Results
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-tools text-primary me-2"></i>Extracted Skills</h6>
+                        <div id="extractedSkills" class="mb-3"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-project-diagram text-success me-2"></i>Relevant Projects</h6>
+                        <div id="extractedProjects" class="mb-3"></div>
+                    </div>
+                </div>
+
+                <!-- Resume Score Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h6><i class="fas fa-chart-line text-warning me-2"></i>Resume Score Analysis</h6>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <h3 class="text-primary" id="overallScore">0</h3>
+                                            <small class="text-muted">Overall Score</small>
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar bg-primary" id="overallProgress" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <h5 class="text-info" id="skillScore">0</h5>
+                                            <small class="text-muted">Skills Score</small>
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar bg-info" id="skillProgress" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <h5 class="text-success" id="experienceScore">0</h5>
+                                            <small class="text-muted">Experience Score</small>
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar bg-success" id="experienceProgress" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <h5 class="text-warning" id="educationScore">0</h5>
+                                            <small class="text-muted">Education Score</small>
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar bg-warning" id="educationProgress" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h6><i class="fas fa-comments text-info me-2"></i>Personalized Feedback</h6>
+                        <div class="alert alert-light" id="feedbackSection">
+                            <p id="feedbackText"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h6><i class="fas fa-question-circle text-info me-2"></i>Generated Interview Questions</h6>
+                    <div id="generatedQuestions"></div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-success" onclick="startInterview()">
+                        <i class="fas fa-play me-2"></i>Start Practice Interview
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="resetAnalysis()">
+                        <i class="fas fa-redo me-2"></i>Analyze Another Resume
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="card mt-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Resume Analysis Tips</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Include technical skills and technologies</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Mention specific projects and achievements</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Use clear, professional language</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Quantify your accomplishments</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Include relevant certifications</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Keep it concise and well-structured</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interview Modal -->
+<div class="modal fade" id="interviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-user-tie me-2"></i>Practice Interview</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="interviewQuestions"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let analysisResults = null;
+
+// Handle file selection
+document.getElementById('resumeFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const fileName = document.getElementById('fileName');
+    const uploadBtn = document.getElementById('uploadBtn');
+    
+    if (file) {
+        fileName.textContent = `Selected: ${file.name}`;
+        uploadBtn.disabled = false;
+    } else {
+        fileName.textContent = '';
+        uploadBtn.disabled = true;
+    }
+});
+
+// Upload and analyze resume
+function uploadResume() {
+    const fileInput = document.getElementById('resumeFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select a resume file first.');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('resume', file);
+    
+    const uploadBtn = document.getElementById('uploadBtn');
+    const originalText = uploadBtn.innerHTML;
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing Resume...';
+    uploadBtn.disabled = true;
+    
+    fetch('/student/upload_resume', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            analysisResults = data;
+            displayResults(data);
+        } else {
+            alert(data.message || 'Failed to analyze resume');
+        }
+        
+        uploadBtn.innerHTML = originalText;
+        uploadBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while analyzing the resume');
+        uploadBtn.innerHTML = originalText;
+        uploadBtn.disabled = false;
+    });
+}
+
+// Display analysis results
+function displayResults(data) {
+    const resultsCard = document.getElementById('resultsCard');
+    const skillsDiv = document.getElementById('extractedSkills');
+    const projectsDiv = document.getElementById('extractedProjects');
+    const questionsDiv = document.getElementById('generatedQuestions');
+    
+    // Display skills
+    skillsDiv.innerHTML = data.extracted_skills.map(skill => 
+        `<span class="badge bg-primary me-2 mb-2">${skill}</span>`
+    ).join('');
+    
+    // Display projects
+    projectsDiv.innerHTML = data.extracted_projects.map(project => 
+        `<div class="alert alert-success py-2">
+            <i class="fas fa-project-diagram me-2"></i>${project}
+        </div>`
+    ).join('');
+    
+    // Display scores with animations
+    displayScore('overallScore', 'overallProgress', data.resume_score);
+    displayScore('skillScore', 'skillProgress', data.skill_score);
+    displayScore('experienceScore', 'experienceProgress', data.experience_score);
+    displayScore('educationScore', 'educationProgress', data.education_score);
+    
+    // Display feedback
+    document.getElementById('feedbackText').innerHTML = data.feedback.replace(/\n/g, '<br>');
+    
+    // Display questions
+    questionsDiv.innerHTML = data.questions.map((question, index) => 
+        `<div class="alert alert-info">
+            <strong>Q${index + 1}:</strong> ${question}
+        </div>`
+    ).join('');
+    
+    resultsCard.style.display = 'block';
+    resultsCard.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Display score with animation
+function displayScore(elementId, progressId, score) {
+    const scoreElement = document.getElementById(elementId);
+    const progressElement = document.getElementById(progressId);
+    
+    // Animate the score counting up
+    let currentScore = 0;
+    const increment = score / 50; // Animate over 50 steps
+    const timer = setInterval(() => {
+        currentScore += increment;
+        if (currentScore >= score) {
+            currentScore = score;
+            clearInterval(timer);
+        }
+        scoreElement.textContent = Math.round(currentScore);
+    }, 20);
+    
+    // Set progress bar
+    progressElement.style.width = score + '%';
+    
+    // Add color coding based on score
+    if (score >= 80) {
+        progressElement.className = progressElement.className.replace(/bg-\w+/, 'bg-success');
+    } else if (score >= 60) {
+        progressElement.className = progressElement.className.replace(/bg-\w+/, 'bg-warning');
+    } else {
+        progressElement.className = progressElement.className.replace(/bg-\w+/, 'bg-danger');
+    }
+}
+
+// Start interview with generated questions
+function startInterview() {
+    if (!analysisResults) return;
+    
+    const questionsDiv = document.getElementById('interviewQuestions');
+    questionsDiv.innerHTML = analysisResults.questions.map((question, index) => 
+        `<div class="mb-3">
+            <h6>Question ${index + 1}:</h6>
+            <p>${question}</p>
+            <textarea class="form-control" rows="3" placeholder="Type your answer here..."></textarea>
+        </div>`
+    ).join('');
+    
+    const modal = new bootstrap.Modal(document.getElementById('interviewModal'));
+    modal.show();
+}
+
+// Reset analysis
+function resetAnalysis() {
+    document.getElementById('resumeFile').value = '';
+    document.getElementById('fileName').textContent = '';
+    document.getElementById('resultsCard').style.display = 'none';
+    document.getElementById('uploadBtn').disabled = true;
+    analysisResults = null;
+}
+</script>
+{% endblock %}

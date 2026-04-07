@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {background-color: #f7f7f7;}
+        .btn {border-radius: 12px;}
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card result-card">
+                    <div class="card-header text-center">
+                        <h3>🎯 Prediction Results</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h2 class="display-4">{{ predicted_score }}%</h2>
+                            <p class="lead">Predicted Final Score</p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="bg-white text-dark p-3 rounded">
+                                    <h5>{{ hours_studied }}</h5>
+                                    <small>Hours Studied</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="bg-white text-dark p-3 rounded">
+                                    <h5>{{ attendance_percentage }}%</h5>
+                                    <small>Attendance</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="bg-white text-dark p-3 rounded">
+                                    <h5>{{ previous_score }}</h5>
+                                    <small>Previous Score</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            {% if predicted_score >= 90 %}
+                                <div class="alert alert-success">
+                                    <strong>Excellent!</strong> You're predicted to score very high! 🌟
+                                </div>
+                            {% elif predicted_score >= 80 %}
+                                <div class="alert alert-info">
+                                    <strong>Good Job!</strong> You're on track for a good score! 👍
+                                </div>
+                            {% elif predicted_score >= 70 %}
+                                <div class="alert alert-warning">
+                                    <strong>Keep Going!</strong> There's room for improvement! 📚
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    <strong>Focus More!</strong> You need to study harder! 💪
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-center">
+                            <a href="/" class="btn btn-light btn-lg">Make Another Prediction</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz - {{ subject.name }} Level {{ level }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-primary mb-3">
+                    <i class="fas fa-question-circle me-2"></i>{{ subject.name }} - Level {{ level }} Quiz
+                </h2>
+                <p class="text-muted">Answer {{ questions|length }} questions and get instant feedback on your performance.</p>
+                <div class="progress mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: 0%" id="progressBar"></div>
+                </div>
+                <div class="text-center">
+                    <span id="timeElapsed">00:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <form id="quizForm">
+            <input type="hidden" id="subjectId" value="{{ subject.id }}">
+            <input type="hidden" id="quizLevel" value="{{ level }}">
+            
+            {% for question in questions %}
+            {% set question_index = loop.index0 %}
+            <div class="card mb-4 question-card" data-question="{{ question_index }}">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Question {{ loop.index }} of {{ questions|length }}</h5>
+                    <small>Difficulty: {{ question.difficulty.title() }} | Topic: {{ question.topic }}</small>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-4">{{ question.question }}</h6>
+                    
+                    {% for option in question.options %}
+                    <div class="quiz-option" onclick="selectOption({{ question_index }}, {{ loop.index0 }})">
+                        <input type="radio" name="question_{{ question_index }}" value="{{ loop.index0 }}" class="me-2">
+                        <strong>{{ ['A', 'B', 'C', 'D'][loop.index0] }}. {{ option }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Quiz
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="resultsHeader">
+                <h5 class="modal-title">Quiz Results</h5>
+            </div>
+            <div class="modal-body" id="resultsBody">
+                <!-- Results will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <a href="/student/subjects" class="btn btn-primary">Back to Subjects</a>
+                <button type="button" class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.quiz-option {
+    padding: 15px;
+    margin: 10px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.quiz-option:hover {
+    border-color: #007bff;
+    background: #e7f3ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.2);
+}
+
+.quiz-option.selected {
+    border-color: #28a745;
+    background: #d4edda;
+    color: #155724;
+}
+
+.quiz-option input[type="radio"] {
+    pointer-events: none;
+}
+
+.question-timer {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.question-timer.warning {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let startTime = Date.now();
+let currentQuestion = 0;
+let answers = [];
+let questionStartTime = Date.now();
+let questionTimers = [];
+
+// Initialize quiz
+document.addEventListener('DOMContentLoaded', function() {
+    const totalQuestions = {{ questions|length }};
+    answers = new Array(totalQuestions).fill(null);
+    
+    // Show only first question
+    showQuestion(0);
+    
+    // Start timer
+    startTimer();
+    
+    // Navigation buttons
+    addNavigationButtons();
+});
+
+function startTimer() {
+    setInterval(function() {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timeElapsed').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+function showQuestion(index) {
+    const questions = document.querySelectorAll('.question-card');
+    questions.forEach((q, i) => {
+        q.style.display = i === index ? 'block' : 'none';
+    });
+    
+    currentQuestion = index;
+    questionStartTime = Date.now();
+    updateProgress();
+    addQuestionTimer(index);
+}
+
+function addQuestionTimer(questionIndex) {
+    const questionCard = document.querySelector(`[data-question="${questionIndex}"]`);
+    const cardHeader = questionCard.querySelector('.card-header');
+    
+    // Add timer display if not exists
+    let timerDisplay = cardHeader.querySelector('.question-timer');
+    if (!timerDisplay) {
+        timerDisplay = document.createElement('div');
+        timerDisplay.className = 'question-timer';
+        cardHeader.style.position = 'relative';
+        cardHeader.appendChild(timerDisplay);
+    }
+    
+    // Clear existing timer
+    if (questionTimers[questionIndex]) {
+        clearInterval(questionTimers[questionIndex]);
+    }
+    
+    // Start question timer
+    questionTimers[questionIndex] = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - questionStartTime) / 1000);
+        timerDisplay.textContent = `${elapsed}s`;
+        
+        if (elapsed >= 4) {
+            timerDisplay.classList.add('warning');
+        }
+        
+        if (elapsed >= 6) {
+            // Redirect to gaming section after 6 seconds
+            clearInterval(questionTimers[questionIndex]);
+            if (confirm('You\'re taking too long on this question! Would you like to take a quick gaming break to refresh your mind?')) {
+                window.location.href = '/student/games';
+            }
+        }
+    }, 1000);
+}
+
+function updateProgress() {
+    const totalQuestions = {{ questions|length }};
+    const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+}
+
+function selectOption(questionIndex, optionIndex) {
+    answers[questionIndex] = optionIndex;
+    
+    // Clear question timer
+    if (questionTimers[questionIndex]) {
+        clearInterval(questionTimers[questionIndex]);
+        const questionCard = document.querySelector(`[data-question="${questionIndex}"]`);
+        const timerDisplay = questionCard.querySelector('.question-timer');
+        if (timerDisplay) {
+            timerDisplay.textContent = '✓';
+            timerDisplay.style.background = '#28a745';
+            timerDisplay.classList.remove('warning');
+        }
+    }
+    
+    // Update UI
+    const questionCard = document.querySelector(`[data-question="${questionIndex}"]`);
+    const options = questionCard.querySelectorAll('.quiz-option');
+    
+    options.forEach((option, i) => {
+        option.classList.remove('selected');
+        const radio = option.querySelector('input[type="radio"]');
+        radio.checked = false;
+        
+        if (i === optionIndex) {
+            option.classList.add('selected');
+            radio.checked = true;
+        }
+    });
+}
+
+function addNavigationButtons() {
+    const totalQuestions = {{ questions|length }};
+    
+    document.querySelectorAll('.question-card').forEach((card, index) => {
+        const cardBody = card.querySelector('.card-body');
+        const navDiv = document.createElement('div');
+        navDiv.className = 'mt-4 d-flex justify-content-between';
+        
+        if (index > 0) {
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'btn btn-outline-secondary';
+            prevBtn.innerHTML = '<i class="fas fa-arrow-left me-2"></i>Previous';
+            prevBtn.onclick = () => showQuestion(index - 1);
+            navDiv.appendChild(prevBtn);
+        }
+        
+        if (index < totalQuestions - 1) {
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'btn btn-outline-primary ms-auto';
+            nextBtn.innerHTML = 'Next<i class="fas fa-arrow-right ms-2"></i>';
+            nextBtn.onclick = () => showQuestion(index + 1);
+            navDiv.appendChild(nextBtn);
+        }
+        
+        cardBody.appendChild(navDiv);
+    });
+}
+
+function retakeQuiz() {
+    window.location.reload();
+}
+
+// Handle form submission
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Check if all questions are answered
+    const unanswered = answers.findIndex(answer => answer === null);
+    if (unanswered !== -1) {
+        alert(`Please answer question ${unanswered + 1} before submitting.`);
+        showQuestion(unanswered);
+        return;
+    }
+    
+    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+    
+    const formData = {
+        subject_id: parseInt(document.getElementById('subjectId').value),
+        level: parseInt(document.getElementById('quizLevel').value),
+        answers: answers,
+        time_spent: timeSpent
+    };
+    
+    // Disable submit button
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+    
+    fetch('/student/submit_quiz', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showResults(data);
+        } else {
+            alert(data.message || 'Failed to submit quiz');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Quiz';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the quiz');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Quiz';
+    });
+});
+
+function showResults(data) {
+    const modal = document.getElementById('resultsModal');
+    const header = document.getElementById('resultsHeader');
+    const body = document.getElementById('resultsBody');
+    
+    // Set header color based on pass/fail
+    if (data.passed) {
+        header.className = 'modal-header bg-success text-white';
+    } else {
+        header.className = 'modal-header bg-danger text-white';
+    }
+    
+    const timeSpent = Math.floor(data.time_spent / 60) + ':' + String(data.time_spent % 60).padStart(2, '0');
+    
+    body.innerHTML = `
+        <div class="text-center mb-4">
+            <i class="fas fa-${data.passed ? 'check-circle' : 'times-circle'} fa-4x text-${data.passed ? 'success' : 'danger'} mb-3"></i>
+            <h3>${data.passed ? 'Congratulations!' : 'Keep Trying!'}</h3>
+            <p class="lead">${data.passed ? 'You passed the quiz!' : 'You need more practice.'}</p>
+        </div>
+        
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-primary">${data.score}</h5>
+                        <small class="text-muted">Correct Answers</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-info">${data.total_questions}</h5>
+                        <small class="text-muted">Total Questions</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-warning">${data.percentage.toFixed(1)}%</h5>
+                        <small class="text-muted">Score Percentage</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-secondary">${timeSpent}</h5>
+                        <small class="text-muted">Time Taken</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        ${!data.passed ? `
+            <div class="alert alert-warning mt-4">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Needs Improvement:</strong> Review the learning materials and try again to improve your score.
+            </div>
+        ` : ''}
+        
+        <div class="mt-4">
+            <h6>Answer Review:</h6>
+            <div class="accordion" id="answerReview">
+                ${data.correct_answers && data.user_answers ? data.correct_answers.map((correct, index) => {
+                    const userAnswer = data.user_answers[index];
+                    const isCorrect = userAnswer === correct;
+                    const questionText = `Question ${index + 1}`;
+                    
+                    return `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading${index}">
+                                <button class="accordion-button ${isCorrect ? 'bg-success text-white' : 'bg-danger text-white'} collapsed" 
+                                        type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse${index}">
+                                    <i class="fas fa-${isCorrect ? 'check' : 'times'} me-2"></i>
+                                    ${questionText} - ${isCorrect ? 'Correct' : 'Incorrect'}
+                                </button>
+                            </h2>
+                            <div id="collapse${index}" class="accordion-collapse collapse" 
+                                 data-bs-parent="#answerReview">
+                                <div class="accordion-body">
+                                    <p><strong>Your Answer:</strong> ${['A', 'B', 'C', 'D'][userAnswer] || 'Not answered'}</p>
+                                    <p><strong>Correct Answer:</strong> ${['A', 'B', 'C', 'D'][correct]}</p>
+                                    ${!isCorrect ? '<p class="text-muted"><strong>Tip:</strong> Review this topic and try similar questions.</p>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('') : '<p>Answer details not available.</p>'}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h6>Recommendations:</h6>
+            <ul>
+                ${data.passed ? 
+                    '<li>Great job! Consider moving to the next level.</li><li>Help other students with their studies.</li>' :
+                    '<li>Review learning materials for this subject.</li><li>Take practice quizzes to improve your understanding.</li><li>Consider asking your teacher for additional help.</li>'
+                }
+            </ul>
+        </div>
+    `;
+    
+    const modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+}
+</script>
+{% endblock %}
