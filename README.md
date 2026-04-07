@@ -89,31 +89,47 @@ npm install npm run dev
 
 ------------------------------------------------------------------------
 
-## Folder Structure
+## 📁 Folder Structure
 
+```plaintext
 Learnex/
 │
-├── Frontend (React + TSX + Tailwind)
-│   └── src/
+├── src/                        # Frontend (React + TypeScript + Tailwind)
+│   ├── components/
+│   ├── pages/
+│   ├── assets/
+│   ├── App.tsx
+│   └── main.tsx
 │
-├── Backend (Flask)
-│   ├── app.py
-│   ├── templates/
-│   └── static/
+├── templates/                  # Flask HTML templates
+│   ├── base.html
+│   ├── index.html
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   └── result.html
 │
-├── Machine Learning
-│   ├── train_model.py
-│   ├── student_data.csv
-│   └── student_score_model.joblib
+├── static/                     # Static files (CSS, JS, images)
+│   ├── css/
+│   ├── js/
+│   └── images/
 │
-├── Database
-│   └── learning_platform.db
+├── instance/
+│   └── learning_platform.db    # SQLite database
 │
-├── Config Files
-│   ├── package.json
-│   ├── requirements.txt
-│   ├── tailwind.config.js
-│   └── vite.config.ts
+├── train_model.py              # ML training script
+├── student_data.csv            # Dataset
+├── student_score_model.joblib  # Trained ML model
+│
+├── app.py                      # Flask backend
+│
+├── package.json
+├── requirements.txt
+├── tailwind.config.js
+├── vite.config.ts
+│
+├── .gitignore
+└── README.md
 ------------------------------------------------------------------------
 
 ## Usage
